@@ -30,9 +30,9 @@ class HostFileRepositoryTest {
 
     @Test
     void findAll() throws DataException {
-        assertTrue(repository.findAll().size() == 4);
+        assertTrue(repository.findAll().size() == 5);
         List<Host> actual = repository.findAll();
-        assertEquals(4, actual.size());
+        assertEquals(5, actual.size());
     }
 
     //3edda6bc-ab95-49a8-8962-d50b53f84b15,Yearnes,eyearnes0@sfgate.com,(806) 1783815,3 Nova Trail,Amarillo,TX,79182,340,425

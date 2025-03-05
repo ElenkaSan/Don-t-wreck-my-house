@@ -28,6 +28,7 @@ public class ReservationFileRepository implements ReservationRepository {
     }
  */
 
+    //find file by host_id
     @Override
     public List<Reservation> findByHostId(String host_id) throws DataException {
         ArrayList<Reservation> result = new ArrayList<>(); //create a list of reservation
@@ -48,6 +49,11 @@ public class ReservationFileRepository implements ReservationRepository {
     //under host_id...
     @Override
     public Reservation findById(int id, String host_id) throws DataException {
+        /*
+         String filePath = host_id + ".csv"; //making path to host_id file name
+        List<Reservation> reservations = findByHostId(filePath);
+        return reservations.stream()
+         */
         return findByHostId(host_id).stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
@@ -63,6 +69,25 @@ public class ReservationFileRepository implements ReservationRepository {
     }
 
     @Override
+    public List<Reservation> findByGuestId(String guest_id) throws DataException {
+        List<Reservation> reservations = new ArrayList<>();
+        File folder = new File(directory);
+        File[] files = folder.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                System.out.println("Checking file: " + file.getName());
+                List<Reservation> hostReservations = findByHostId(file.getName().replace(".csv", ""));
+                reservations.addAll(hostReservations.stream()
+                        .filter(r -> r.getGuest().getId().equals(guest_id))
+                        .collect(Collectors.toList()));
+            }
+        }
+        return reservations;
+    }
+
+    /* no sure i need it here
+    @Override
     public List<Reservation> findByGuestEmail(String email) throws DataException {
         List<Reservation> reservations = new ArrayList<>();
         File folder = new File(directory);
@@ -77,17 +102,19 @@ public class ReservationFileRepository implements ReservationRepository {
         }
         return reservations;
     }
+     */
 
+    //working
     @Override
     public Reservation add(Reservation reservation) throws DataException {
         List<Reservation> all = findByHostId(reservation.getHost().getId());
-        //reservation.setId(all.size() + 1);
-        reservation.setId(Integer.parseInt(java.util.UUID.randomUUID().toString()));
+        reservation.setId(all.size() + 1); //need next id inside reservation-test
         all.add(reservation);
         writeAll(all, reservation.getHost().getId());
         return reservation;
     }
 
+    //working
     @Override
     public boolean update(Reservation reservation) throws DataException {
         if (reservation == null) {

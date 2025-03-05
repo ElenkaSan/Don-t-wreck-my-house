@@ -31,9 +31,9 @@ class GuestFileRepositoryTest {
     @Test
     void findAll() throws DataException {
         List actual = repository.findAll();
-        assertEquals(5, actual.size());
+        assertEquals(6, actual.size());
 
-        assertTrue(repository.findAll().size() == 5);
+        assertTrue(repository.findAll().size() == 6);
     }
 
     //2,Olympie,Gecks,ogecks1@dagondesign.com,(202) 2528316,DC

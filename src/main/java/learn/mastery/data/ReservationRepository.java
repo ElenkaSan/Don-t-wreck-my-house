@@ -8,7 +8,9 @@ import java.util.List;
 public interface ReservationRepository {
     List<Reservation> findByHostId(String host_id) throws DataException;
 
-    List<Reservation> findByGuestEmail(String email)  throws DataException;
+    List<Reservation> findByGuestId(String guest_id)  throws DataException;
+
+   // List<Reservation> findByGuestEmail(String email) throws DataException;
 
     List<Reservation> findByDate(String host_id, LocalDate date) throws DataException;
 
