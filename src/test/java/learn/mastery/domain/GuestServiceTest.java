@@ -1,7 +1,7 @@
 package learn.mastery.domain;
 
 import learn.mastery.data.DataException;
-import learn.mastery.data.GuestServiceDouble;
+import learn.mastery.data.GuestRepositoryDouble;
 import learn.mastery.models.Guest;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GuestServiceTest {
-    GuestService service = new GuestService(new GuestServiceDouble());
+    GuestService service = new GuestService(new GuestRepositoryDouble());
 
     @Test
     void shouldFindAllGuests() throws DataException {

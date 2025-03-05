@@ -66,6 +66,7 @@ public class GuestFileRepository implements GuestRepository {
 
     //helper methods - private because they are only needed inside ForagerFileRepository:
     //Other classes do not need to call these methods directly.
+    /*
     private void writeAll(List<Guest> guests) throws DataException {
         try (PrintWriter writer = new PrintWriter(filePath)) {
             writer.println(HEADER);
@@ -76,6 +77,7 @@ public class GuestFileRepository implements GuestRepository {
             throw new DataException(ex);
         }
     }
+     */
 
     private String restore(String value) {
         return value.replace(DELIMITER_REPLACEMENT, DELIMITER);

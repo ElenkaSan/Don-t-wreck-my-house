@@ -40,7 +40,7 @@ class ReservationFileRepositoryTest {
     //1,2020-07-01,2020-07-02,18,870
 
     @Test //find file host_id.cvs
-    void findByHostId() throws DataException {
+    void shouldFindByHostId() throws DataException {
         List<Reservation> host = repository.findByHostId("9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         assertNotNull(host);
         assertEquals(2, host.size());
@@ -49,7 +49,7 @@ class ReservationFileRepositoryTest {
     //no sure i need this
 
     @Test
-    void findById() {
+    void shouldFindById() {
         Reservation result = repository.findById(1, "9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         assertNotNull(result);
         //assertEquals(1, result.getId());
@@ -115,7 +115,7 @@ class ReservationFileRepositoryTest {
     }
 
     @Test
-    void update() {
+    void shouldUpdate() {
         Reservation reservation = repository.findById(2, "9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         reservation.setStart_date(LocalDate.of(2025, 03, 3));
         reservation.setEnd_date(LocalDate.of(2025, 03, 5));
@@ -132,7 +132,7 @@ class ReservationFileRepositoryTest {
 
     //
     @Test
-    void deleteById() {
+    void shouldDeleteById() {
         Reservation reservation = repository.findById(1, "9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         assertNotNull(reservation);
         assertTrue(repository.deleteById(1,"9d469342-ad0b-4f5a-8d28-e81e690ba29a"));

@@ -1,15 +1,14 @@
 package learn.mastery.domain;
 
 import learn.mastery.data.DataException;
-import learn.mastery.data.HostServiceDouble;
-import learn.mastery.models.Guest;
+import learn.mastery.data.HostRepositoryDouble;
 import learn.mastery.models.Host;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class HostServiceTest {
-    HostService service = new HostService(new HostServiceDouble());
+    HostService service = new HostService(new HostRepositoryDouble());
 
     @Test
     void shouldFindAllHosts() {

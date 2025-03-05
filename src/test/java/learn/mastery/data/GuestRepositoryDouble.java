@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuestServiceDouble implements GuestRepository {
+public class GuestRepositoryDouble implements GuestRepository {
 
     private final ArrayList<Guest> guest = new ArrayList<>();
 
-    public GuestServiceDouble() {
+    public final static Guest guest1 = new Guest("1", "Sullivan", "Lomas", "slomas0@mediafire.com", "(702) 7768761", "NV");
+    public final static Guest guest2 = new Guest("2", "Olympie", "Gecks", "ogecks1@dagondesign.com", "(202) 2528316", "DC");
+
+    public GuestRepositoryDouble() {
         //guest_id,first_name,last_name,email,phone,state
         //1,Sullivan,Lomas,slomas0@mediafire.com,(702) 7768761,NV
-        Guest guest1 = new Guest("1", "Sullivan", "Lomas", "slomas0@mediafire.com", "(702) 7768761", "NV");
+      //  Guest guest1 = new Guest("1", "Sullivan", "Lomas", "slomas0@mediafire.com", "(702) 7768761", "NV");
         addGuest(guest1);
         //2,Olympie,Gecks,ogecks1@dagondesign.com,(202) 2528316,DC
-        Guest guest2 = new Guest("2", "Olympie", "Gecks", "ogecks1@dagondesign.com", "(202) 2528316", "DC");
+      //  Guest guest2 = new Guest("2", "Olympie", "Gecks", "ogecks1@dagondesign.com", "(202) 2528316", "DC");
         addGuest(guest2);
     }
 
