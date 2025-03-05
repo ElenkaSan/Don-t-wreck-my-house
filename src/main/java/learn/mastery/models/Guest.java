@@ -11,7 +11,20 @@ public class Guest {
     private String email;
     private String phone;
     private String state;
-    private Reservation reservation;
+   // private Reservation reservation;
+
+    public Guest() {
+    }
+
+    public Guest(String guest_id, String firstName, String lastName, String email, String phone, String state) {
+        this.guest_id = guest_id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.state = state;
+       // this.reservation = reservation;
+    }
 
     public String getId() {
         return guest_id;
@@ -61,6 +74,7 @@ public class Guest {
         this.state = state;
     }
 
+   /*
     public Reservation getReservation() {
         return reservation;
     }
@@ -68,4 +82,5 @@ public class Guest {
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
     }
+    */
 }
