@@ -1,5 +1,6 @@
 package learn.mastery.data;
 
+import learn.mastery.models.Guest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,14 +32,28 @@ class GuestFileRepositoryTest {
     void findAll() throws DataException {
         List actual = repository.findAll();
         assertEquals(5, actual.size());
+
         assertTrue(repository.findAll().size() == 5);
     }
 
+    //2,Olympie,Gecks,ogecks1@dagondesign.com,(202) 2528316,DC
     @Test
-    void findById() throws DataException{
+    void findByIdGecks() throws DataException{
+        Guest gecks = repository.findById("2");
+        assertNotNull(gecks);
+        assertEquals("Olympie", gecks.getFirstName());
+        assertEquals("Gecks", gecks.getLastName());
+        assertEquals("ogecks1@dagondesign.com", gecks.getEmail());
+        assertEquals("(202) 2528316", gecks.getPhone());
+        assertEquals("DC", gecks.getState());
     }
 
     @Test
     void findByGuestEmail() throws DataException {
+        List<Guest> result = repository.findByGuestEmail("slomas0@mediafire.com");
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        assertTrue(repository.findByGuestEmail("slomas0@mediafire.com").size() == 1);
     }
 }

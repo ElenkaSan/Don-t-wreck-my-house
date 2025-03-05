@@ -108,8 +108,8 @@ public class HostFileRepository implements HostRepository {
             result.setPhone(restore(fields[3]));
             result.setAddress(restore(fields[4]));
             result.setCity(restore(fields[5]));
-            result.setPostal_code(restore(fields[6]));
-            result.setState(restore(fields[7]));
+            result.setState(restore(fields[6]));
+            result.setPostal_code(restore(fields[7]));
             result.setStandard_rate(new BigDecimal(fields[8]));
             result.setWeekend_rate(new BigDecimal(fields[9]));
             return result;

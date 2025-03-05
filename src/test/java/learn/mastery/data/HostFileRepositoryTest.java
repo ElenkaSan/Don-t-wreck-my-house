@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,17 +29,30 @@ class HostFileRepositoryTest {
     }
 
     @Test
-    void findAll() throws DataException{
+    void findAll() throws DataException {
         assertTrue(repository.findAll().size() == 4);
         List<Host> actual = repository.findAll();
         assertEquals(4, actual.size());
     }
 
+    //3edda6bc-ab95-49a8-8962-d50b53f84b15,Yearnes,eyearnes0@sfgate.com,(806) 1783815,3 Nova Trail,Amarillo,TX,79182,340,425
     @Test
-    void findById() throws DataException {
+    void shouldFindByIdYearnes() throws DataException {
+        Host yearnes = repository.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15");
+        assertNotNull(yearnes);
+        assertEquals("Yearnes", yearnes.getLastName());
+        assertEquals("eyearnes0@sfgate.com", yearnes.getEmail());
+        assertEquals("(806) 1783815", yearnes.getPhone());
+        assertEquals("3 Nova Trail", yearnes.getAddress());
+        assertEquals("Amarillo", yearnes.getCity());
+        assertEquals("TX", yearnes.getState());
+        assertEquals("79182", yearnes.getPostal_code());
+        assertEquals(new BigDecimal(340), yearnes.getStandard_rate());
+        assertEquals(new BigDecimal(425),yearnes.getWeekend_rate());
     }
 
     @Test
     void findByHostEmail() throws DataException {
+        assertTrue(repository.findByHostEmail("krhodes1@posterous.com").size() == 1);
     }
 }
