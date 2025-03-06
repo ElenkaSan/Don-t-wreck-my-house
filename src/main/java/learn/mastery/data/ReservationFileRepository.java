@@ -128,6 +128,15 @@ public class ReservationFileRepository implements ReservationRepository {
                 return true;
             }
         }
+        /* or
+         for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getId() == reservation.getId() &&
+                    reservations.get(i).getHost().getId().equals(reservation.getHost().getId())) {
+                reservations.set(i, reservation);
+                return true;
+            }
+        }
+         */
         return false;
     }
 
