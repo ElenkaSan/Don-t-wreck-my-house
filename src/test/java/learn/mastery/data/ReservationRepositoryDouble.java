@@ -71,6 +71,32 @@ public class ReservationRepositoryDouble implements ReservationRepository {
 
     @Override
     public boolean deleteById(int id, String host_id) throws DataException {
-        return findById(id, host_id) != null;
+        return reservations.removeIf(reservation -> reservation.getId() == id && reservation.getHost().getId().equals(host_id));
     }
+
+    /*
+      public ReservationRepositoryDouble() {
+        Reservation reservationOne = new Reservation();
+        reservationOne.setId(1);
+        reservationOne.setStart_date(start_date);
+        reservationOne.setEnd_date(end_date);
+        reservationOne.setGuest(GuestRepositoryDouble.guest1);
+        reservationOne.setTotal(new BigDecimal(870));
+        Host host1 = new Host();
+        host1.setId("f92aa2ac-5370-4c61-87e3-3f18a81ce2e6");  // Matching host_id
+        reservationOne.setHost(host1);
+        reservations.add(reservationOne);
+
+        Reservation reservationTwo = new Reservation();
+        reservationTwo.setId(2);
+        reservationTwo.setStart_date(start_date);
+        reservationTwo.setEnd_date(end_date);
+        reservationTwo.setGuest(GuestRepositoryDouble.guest2);  // Different guest
+        reservationTwo.setTotal(new BigDecimal(870));
+        Host host2 = new Host();
+        host2.setId("f92aa2ac-5370-4c61-87e3-3f18a81ce2e6");  // Same host_id
+        reservationTwo.setHost(host2);
+        reservations.add(reservationTwo);
+    }
+     */
 }

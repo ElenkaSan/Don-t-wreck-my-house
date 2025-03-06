@@ -8,6 +8,7 @@ import learn.mastery.models.Reservation;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ReservationService {
@@ -102,11 +103,17 @@ public class ReservationService {
     public Result<Reservation> deleteById(int id, String host_id) throws DataException {
         Result<Reservation> result = new Result<>();
         List<Reservation> all = reservationRepository.findByHostId(host_id);
-        if(all == null){
-            result.addErrorMessage("Could not find Panel Id" + id);
+        if(all == null || all.isEmpty()){
+            result.addErrorMessage("Could not found the reservation");
+            return result;
+        }
+        Reservation remove = reservationRepository.findById(id, host_id);
+        if (remove == null) {
+            result.addErrorMessage("Reservation " + id + " not found for this host " + host_id);
             return result;
         }
         reservationRepository.deleteById(id, host_id);
+        result.setPayload(remove);
         return result;
     }
 
@@ -125,21 +132,52 @@ public class ReservationService {
             return result;
         }
 
-        if(reservation.getStart_date() == null || reservation.getEnd_date() == null) {
-            result.addErrorMessage("Reservation start and end dates are required.");
+        if (!reservation.getStart_date().isBefore(reservation.getEnd_date())) {
+            result.addErrorMessage("The start date must come before the end date.");
+            return result;
         }
 
-    //    if(reservation.getGuest().getEmail() == null || reservation.getGuest().getEmail().trim().length() == 0) {
+        //need more work on it
+        List<Reservation> overlappingDates = reservationRepository.findByDate(reservation.getHost().getId(), reservation.getStart_date()).stream()
+                .filter(existing -> reservation.getId() != existing.getId())
+                .filter(existing ->
+                        !reservation.getEnd_date().isBefore(existing.getStart_date()) &&
+                                !reservation.getStart_date().isAfter(existing.getEnd_date())
+                )
+                .collect(Collectors.toList());
+
+                /*
+                .anyMatch(existing ->reservation.getId() !=  existing.getId()
+                && existing.getEnd_date().isBefore(reservation.getEnd_date())
+                && existing.getStart_date().isAfter(reservation.getEnd_date()));
+                 */
+        System.out.println("Checking for overlaps with start: " + reservation.getStart_date() + ", end: " + reservation.getEnd_date());
+        System.out.println("Existing reservations: " + overlappingDates);
+
+        if(!overlappingDates.isEmpty()) {
+            result.addErrorMessage("The reservation may never overlap existing reservation dates.");
+            return result;
+        }
+
+        //    if(reservation.getGuest().getEmail() == null || reservation.getGuest().getEmail().trim().length() == 0) {
     //        result.addErrorMessage("Guest email is required.");
     //    }
+
+        //    if(reservation.getStart_date() == null || reservation.getEnd_date() == null) {
+        //            result.addErrorMessage("Reservation start and end dates are required.");
+        //        }
 
     //    if(reservation.getHost().getEmail() == null || reservation.getHost().getEmail().trim().length() == 0) {
      //       result.addErrorMessage("Host email is required.");
      //   }
 
-        if(reservation.getStart_date() == reservation.getEnd_date()) {
-            result.addErrorMessage("Reservation start and end dates can be the same dates.");
-        }
+  //      if (reservation.getStart_date().isBefore(LocalDate.now()) || reservation.getEnd_date().isAfter(LocalDate.now())) {
+   //         result.addErrorMessage("Reservation start and end date cannot be in the past.");
+    //    }
+
+    //    if(reservation.getStart_date() == reservation.getStart_date() || reservation.getEnd_date() == reservation.getEnd_date() ) {
+      //      result.addErrorMessage("Reservation start and end dates can be the same dates.");
+       // }
 
         return result;
     }

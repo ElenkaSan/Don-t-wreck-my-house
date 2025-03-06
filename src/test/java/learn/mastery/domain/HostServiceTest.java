@@ -11,12 +11,12 @@ class HostServiceTest {
     HostService service = new HostService(new HostRepositoryDouble());
 
     @Test
-    void shouldFindAllHosts() {
+    void shouldFindAllHosts() throws DataException {
         assertTrue(service.findAll().size() == 2);
     }
 
     @Test
-    void shouldFindByHostId() {
+    void shouldFindByHostId() throws DataException {
         Host yearnes = service.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15");
         assertNotNull(yearnes);
         assertEquals("Yearnes", yearnes.getLastName());
@@ -31,7 +31,7 @@ class HostServiceTest {
     }
 
     @Test
-    void shouldFindByHostEmail() {
+    void shouldFindByHostEmail() throws DataException {
         assertTrue(service.findByHostEmail("eyearnes0@sfgate.com").size() == 1);
         assertTrue(service.findByHostEmail("krhodes1@posterous.com").size() == 1);
     }
