@@ -4,10 +4,11 @@ import learn.mastery.data.DataException;
 import learn.mastery.data.GuestRepository;
 import learn.mastery.data.HostRepository;
 import learn.mastery.data.ReservationRepository;
+import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -37,6 +38,28 @@ public class ReservationService {
     public List<Reservation> findByGuestId(String guest_id) throws DataException {
         return reservationRepository.findByGuestId(guest_id);
     }
+
+
+    public List<Reservation> findByHostEmail(String hostEmail) throws DataException {
+        Host host = hostRepository.findByHostEmail(hostEmail).stream().findFirst().orElse(null);
+        if (host == null) {
+   //         System.out.println("\nNo host found for email: " + hostEmail);
+            return Collections.emptyList(); // No host found
+        }
+     //   System.out.println("\n" + host.getLastName() + ": " + host.getCity() + ", " + host.getState());
+
+        List<Reservation> reservations = reservationRepository.findByHostId(host.getId());
+        reservations.sort(Comparator.comparing(Reservation::getStart_date)); // Sort by start date
+  //      System.out.println("\n" + host.getId());
+        for (Reservation reservation : reservations) {
+            reservation.setHost(host);
+        }
+        return reservations;
+    }
+
+  //  public Host findHostByEmail(String hostEmail) throws DataException {
+  //      return hostRepository.findByHostEmail(hostEmail).stream().findFirst().orElse(null);
+  //  }
 
     public Result<Reservation> add(Reservation reservation) throws DataException {
         Result<Reservation> result = validate(reservation);
