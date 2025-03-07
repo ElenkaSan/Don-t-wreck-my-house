@@ -51,12 +51,11 @@ public class View {
        return io.readString("\nEnter Host Email: ");
     }
 
-    //Host Email: bcharon56@storify.com
+    //Host Email: equeyeiro2n@seattletimes.com
     //
     //Charon: Tampa, FL
     //=================
     //ID: 8, 08/12/2020 - 08/18/2020, Guest: Carncross, Tremain, Email: tcarncross2@japanpost.jp
-    //or equeyeiro2n@seattletimes.com
     public void displayReservations(List<Reservation> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             io.println("No reservations found.");

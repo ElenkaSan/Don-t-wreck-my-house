@@ -4,6 +4,7 @@ import learn.mastery.data.DataException;
 import learn.mastery.data.GuestRepository;
 import learn.mastery.data.HostRepository;
 import learn.mastery.data.ReservationRepository;
+import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 
@@ -47,12 +48,13 @@ public class ReservationService {
             return Collections.emptyList(); // No host found
         }
      //   System.out.println("\n" + host.getLastName() + ": " + host.getCity() + ", " + host.getState());
-
         List<Reservation> reservations = reservationRepository.findByHostId(host.getId());
         reservations.sort(Comparator.comparing(Reservation::getStart_date)); // Sort by start date
   //      System.out.println("\n" + host.getId());
         for (Reservation reservation : reservations) {
             reservation.setHost(host);
+            Guest guest = guestRepository.findById(reservation.getGuest().getId());
+            reservation.setGuest(guest);
         }
         return reservations;
     }
