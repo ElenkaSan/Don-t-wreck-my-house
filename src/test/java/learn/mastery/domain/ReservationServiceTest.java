@@ -24,43 +24,6 @@ class ReservationServiceTest {
     final LocalDate start_date = LocalDate.of(2020, 07, 01);
     final LocalDate end_date = LocalDate.of(2020, 07, 02);
 
-/*
-    @Test
-    void shouldFindByHostId() {
-        List<Reservation> host = service.findByHostId(HostRepositoryDouble.host1.getId());
-        assertNotNull(host);
-        assertEquals(2, host.size());
-    }
-
-
-    @Test
-    void shouldFindById() {
-        Reservation result = service.findById(1, HostRepositoryDouble.host2.getId());
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals(start_date, result.getStart_date());
-        assertEquals(end_date, result.getEnd_date());
-        assertEquals("2", result.getGuest().getId());
-        assertEquals(new BigDecimal(870), result.getTotal());
-    }
-
-     @Test
-    void shouldFindFileByGuestId() {
-         List<Reservation> guestReservations = service.findByGuestId("2");
-         assertNotNull(guestReservations);
-         assertTrue(guestReservations.size() > 0);
-     }
-
-
-     @Test
-    void shouldFindByDateAndHostIdFileName() {
-         LocalDate date = LocalDate.of(2025, 3, 5);  // Adjust to the date you want to test
-         List<Reservation> dateReservations = service.findByDate(HostRepositoryDouble.host1.getId(), date);
-         assertNotNull(dateReservations);
-         assertTrue(dateReservations.size() > 0);
-    }
-    */
-
     //host:
     //f92aa2ac-5370-4c61-87e3-3f18a81ce2e6,Moorcroft,bmoorcroftj@topsy.com,(352) 5465804,28 Badeau Avenue,Ocala,FL,34479,477,596.25
     @Test
@@ -173,7 +136,7 @@ class ReservationServiceTest {
         assertTrue(result.getErrorMessages().contains("The start date must come before the end date."));
     }
 
-    //need more work on it
+    //need more work on it - It's Working on UI!
     @Test
     void shouldNotUpdateOverlapDates() throws DataException {
         List<Reservation> allReservations = service.findByHostId("f92aa2ac-5370-4c61-87e3-3f18a81ce2e6");

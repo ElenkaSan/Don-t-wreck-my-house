@@ -109,6 +109,13 @@ public class ReservationFileRepository implements ReservationRepository {
     public Reservation add(Reservation reservation) throws DataException {
         List<Reservation> all = findByHostId(reservation.getHost().getId());
         reservation.setId(all.size() + 1); //need next id inside reservation-test
+        /* if id is next one...
+            int nextId = all.stream()
+            .mapToInt(Reservation::getId)
+            .max()
+            .orElse(0) + 1; // Ensures IDs are always increasing
+            reservation.setId(nextId);
+         */
         all.add(reservation);
         writeAll(all, reservation.getHost().getId());
         return reservation;

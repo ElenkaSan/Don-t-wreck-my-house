@@ -1,12 +1,12 @@
 package learn.mastery.ui;
 
-import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 public class View {
 
@@ -51,29 +51,22 @@ public class View {
        return io.readString("\nEnter Host Email: ");
     }
 
-    //Host Email: equeyeiro2n@seattletimes.com
-    //
-    //Charon: Tampa, FL
+    //Host Email: vduffil2m@naver.com
+    //Queyeiro: Arlington, VA
     //=================
-    //ID: 8, 08/12/2020 - 08/18/2020, Guest: Carncross, Tremain, Email: tcarncross2@japanpost.jp
+    //ID: 2, 2021-03-29 - 2021-04-03, Guest: Milham, Mari, Email: mmilhampp@usatoday.com, Phone: (518) 9967730.
+
+    //Host Email: sgeorghioua1@fema.gov
+    //Georghiou: Sarasota, FL
+    //=================
+    //ID: 5, 2021-04-12 - 2021-04-15, Guest: Olner, Bradly, Email: bolnerny@amazon.co.jp, Phone: (702) 6972609.
     public void displayReservations(List<Reservation> reservations) {
-        if (reservations == null || reservations.isEmpty()) {
-            io.println("No reservations found.");
-            return;
-        }
         for (Reservation reservation : reservations) {
-       //     Guest guest = reservation.getGuest();
             io.printf("ID: %s, %s - %s, Guest: %s, %s, Email: %s, Phone: %s.%n",
                     reservation.getId(),
                     reservation.getStart_date(),
                     reservation.getEnd_date(),
-                     /*
-                    guest.getLastName(),
-                    guest.getFirstName(),
-                    guest.getEmail(),
-                    guest.getPhone());
-                    */
-                    reservation.getGuest().getLastName(), //getting null ....
+                    reservation.getGuest().getLastName(),
                     reservation.getGuest().getFirstName(),
                     reservation.getGuest().getEmail(),
                     reservation.getGuest().getPhone());
@@ -85,6 +78,53 @@ public class View {
         io.println("\n" + host.getLastName() + ": " + host.getCity() + ", " + host.getState());
         io.println("=================");
     }
+
+    public String enterGuestEmail() {
+        return io.readString("\nEnter Guest Email: ");
+    }
+
+    public Reservation makeReservationDate(){
+        Reservation reservation = new Reservation();
+        LocalDate startDate = io.readLocalDate("Enter Start date (MM/dd/yyyy): ");
+        LocalDate endDate = io.readLocalDate("Enter End date (MM/dd/yyyy): ");
+        reservation.setStart_date(startDate);
+        reservation.setEnd_date(endDate);
+
+        return reservation;
+    }
+
+    //Make a Reservation
+    //==================
+    //Enter Host Email: vduffil2m@naver.com
+    //Enter Guest Email: jhulson8@auda.org.au
+    //Summary
+    //=======
+    //Start: 03/03/2025
+    //End: 03/05/2025
+    //Total: 566
+    //Is this okay? [y/n]: y
+    //Checking for overlaps with start: 2025-03-03, end: 2025-03-05
+    //Existing reservations: []
+    //
+    //Success
+    //=======
+    //Reservation 18 created.
+    //Press [Enter] to continue.
+    public void displaySummary(Reservation reservation, BigDecimal sumCost) {
+        printHeader("Summary");
+        io.println("Start: " + reservation.getStart_date());
+        io.println("End: " + reservation.getEnd_date());
+        io.println("Total: " + sumCost);
+    }
+
+    public boolean confirmation(String input){
+        return io.readBoolean(input);
+    }
+
+    public void displayEditReservation(){
+
+    }
+
 
     //NEED to change
     public GenerateRequest getGenerateRequest() {

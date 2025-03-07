@@ -8,7 +8,11 @@ import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,12 +44,11 @@ public class ReservationService {
         return reservationRepository.findByGuestId(guest_id);
     }
 
-
     public List<Reservation> findByHostEmail(String hostEmail) throws DataException {
         Host host = hostRepository.findByHostEmail(hostEmail).stream().findFirst().orElse(null);
         if (host == null) {
    //         System.out.println("\nNo host found for email: " + hostEmail);
-            return Collections.emptyList(); // No host found
+            return null; // No host found
         }
      //   System.out.println("\n" + host.getLastName() + ": " + host.getCity() + ", " + host.getState());
         List<Reservation> reservations = reservationRepository.findByHostId(host.getId());
@@ -80,12 +83,32 @@ public class ReservationService {
             result.addErrorMessage("Duplicate Reservation is not allowed");
             return result;
         }
-
         if (!result.isSuccess()) {
             return result;
         }
+        BigDecimal sumTotal = summaryTotal(reservation);
+        reservation.setTotal(sumTotal);
         result.setPayload(reservationRepository.add(reservation));
         return result;
+    }
+
+    public BigDecimal summaryTotal(Reservation reservation) {
+        Host host = reservation.getHost();
+        BigDecimal daysRate = host.getStandard_rate();
+        BigDecimal weekendRate = host.getWeekend_rate();
+
+        long numOfNights = ChronoUnit.DAYS.between(reservation.getStart_date(), reservation.getEnd_date());
+        BigDecimal sumTotal = BigDecimal.ZERO;
+        LocalDate enteredDay = reservation.getStart_date();
+        for(long i = 0; i < numOfNights; i++){//need to find which days are weekend
+            if(enteredDay.getDayOfWeek() == DayOfWeek.SATURDAY || enteredDay.getDayOfWeek() == DayOfWeek.SUNDAY){
+                sumTotal = sumTotal.add(weekendRate);
+            } else {
+                sumTotal = sumTotal.add(daysRate);
+            }
+            enteredDay = enteredDay.plusDays(1);
+        }
+        return sumTotal;
     }
 
     public Result<Reservation> update(Reservation reservation) throws DataException {
@@ -176,8 +199,9 @@ public class ReservationService {
                 && existing.getEnd_date().isBefore(reservation.getEnd_date())
                 && existing.getStart_date().isAfter(reservation.getEnd_date()));
                  */
-        System.out.println("Checking for overlaps with start: " + reservation.getStart_date() + ", end: " + reservation.getEnd_date());
-        System.out.println("Existing reservations: " + overlappingDates);
+       //WORKING
+       // System.out.println("Checking for overlaps with start: " + reservation.getStart_date() + ", end: " + reservation.getEnd_date());
+      //  System.out.println("Existing reservations: " + overlappingDates);
 
         if(!overlappingDates.isEmpty()) {
             result.addErrorMessage("The reservation may never overlap existing reservation dates.");

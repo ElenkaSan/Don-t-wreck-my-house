@@ -4,12 +4,13 @@ import learn.mastery.data.DataException;
 import learn.mastery.domain.GuestService;
 import learn.mastery.domain.HostService;
 import learn.mastery.domain.ReservationService;
+import learn.mastery.domain.Result;
+import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 //The Controller accepts a View and MemoryService as constructor dependencies. CRUD
 public class Controller {
@@ -62,12 +63,15 @@ public class Controller {
         view.printHeader(MainMenuOption.VIEW_RESERVATION_FOR_HOST.getMessage());
         String email = view.enterHostEmail();
         List<Reservation> reservations = reservationService.findByHostEmail(email);
-        if (reservations.isEmpty()) {
-            String noSuccessMessage = String.format("No reservation found for this email.");
+        if(reservations == null){
+            String noExist = String.format("Sorry, host does not exist.");
+            view.displayStatus(false, noExist);
+        }
+        else if (reservations.isEmpty()) {
+            String noSuccessMessage = String.format("No reservations were found for that host.");
             view.displayStatus(false, noSuccessMessage);
         } else {
             Host host = reservations.get(0).getHost();
-        //    Host host = reservationService.findHostByEmail(email); // no need
             view.printHostDetails(host);
             view.displayReservations(reservations);
         }
@@ -75,7 +79,58 @@ public class Controller {
     }
 
     private void makeReservation() {
+        view.printHeader(MainMenuOption.MAKE_RESERVATION.getMessage());
+        String hostEmail;
+        List<Reservation> reservations;
+        while (true) {
+            hostEmail = view.enterHostEmail();
+            reservations = reservationService.findByHostEmail(hostEmail);
+            if (reservations == null || reservations.isEmpty()) {
+                String noExist = String.format("Sorry, host does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
 
+        String guestEmail;
+        Guest guest = null;
+        while (true) {
+            guestEmail = view.enterGuestEmail();
+            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+            if (guest == null) {
+                String noExist = String.format("Sorry, guest does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+        Host host = reservations.get(0).getHost();
+        view.printHostDetails(host);
+        view.displayReservations(reservations);
+
+        Reservation reservation = view.makeReservationDate();
+        reservation.setGuest(guest);
+        reservation.setHost(reservations.get(0).getHost());
+
+        BigDecimal sumTotal = reservationService.summaryTotal(reservation);
+        view.displaySummary(reservation, sumTotal);
+        boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
+        if(!createOrNo) {
+            String cancelMessage = "Reservation not created.";
+            view.displayStatus(false, cancelMessage);
+            view.enterToContinue();
+            return;
+        }
+
+        Result<Reservation> result = reservationService.add(reservation);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Reservation %s created.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+            view.enterToContinue();
+        }
     }
 
     private void editReservation() {
