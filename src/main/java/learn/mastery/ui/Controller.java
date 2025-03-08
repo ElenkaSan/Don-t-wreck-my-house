@@ -80,31 +80,11 @@ public class Controller {
 
     private void makeReservation() {
         view.printHeader(MainMenuOption.MAKE_RESERVATION.getMessage());
-        String hostEmail;
-        List<Reservation> reservations;
-        while (true) {
-            hostEmail = view.enterHostEmail();
-            reservations = reservationService.findByHostEmail(hostEmail);
-            if (reservations == null || reservations.isEmpty()) {
-                String noExist = String.format("Sorry, host does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String hostEmail = getHost();
+        List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
-        String guestEmail;
-        Guest guest = null;
-        while (true) {
-            guestEmail = view.enterGuestEmail();
-            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
-            if (guest == null) {
-                String noExist = String.format("Sorry, guest does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String guestEmail = getGuest();
+        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
         view.displayReservations(reservations);
@@ -135,31 +115,11 @@ public class Controller {
 
     private void editReservation() {
         view.printHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
-        String hostEmail;
-        List<Reservation> reservations;
-        while (true) {
-            hostEmail = view.enterHostEmail();
-            reservations = reservationService.findByHostEmail(hostEmail);
-            if (reservations == null || reservations.isEmpty()) {
-                String noExist = String.format("Sorry, host does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String hostEmail = getHost();
+        List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
-        String guestEmail;
-        Guest guest = null;
-        while (true) {
-            guestEmail = view.enterGuestEmail();
-            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
-            if (guest == null) {
-                String noExist = String.format("Sorry, guest does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String guestEmail = getGuest();
+        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
 
@@ -195,33 +155,15 @@ public class Controller {
 
     }
 
+    //vduffil2m@naver.com jhulson8@auda.org.au
     private void cancelReservation() {
         view.printHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
-        String hostEmail;
-        List<Reservation> reservations;
-        while (true) {
-            hostEmail = view.enterHostEmail();
-            reservations = reservationService.findByHostEmail(hostEmail);
-            if (reservations == null || reservations.isEmpty()) {
-                String noExist = String.format("Sorry, host does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String hostEmail = getHost();
+        List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
-        String guestEmail;
-        Guest guest = null;
-        while (true) {
-            guestEmail = view.enterGuestEmail();
-            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
-            if (guest == null) {
-                String noExist = String.format("Sorry, guest does not exist.");
-                view.displayStatus(false, noExist);
-            } else {
-                break;
-            }
-        }
+        String guestEmail = getGuest();
+        guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
         view.displayReservations(reservations);
@@ -236,6 +178,39 @@ public class Controller {
         } else {
             view.printHeader("Return back to Main Menu");
         }
+    }
+
+    // support methods
+    private String getHost() {
+        String hostEmail;
+        List<Reservation> reservations;
+        while (true) {
+            hostEmail = view.enterHostEmail();
+            reservations = reservationService.findByHostEmail(hostEmail);
+            if (reservations == null || reservations.isEmpty()) {
+                String noExist = String.format("Sorry, host does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+        return hostEmail;
+    }
+
+    private String getGuest(){
+        String guestEmail;
+        Guest guest = null;
+        while (true) {
+            guestEmail = view.enterGuestEmail();
+            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+            if (guest == null) {
+                String noExist = String.format("Sorry, guest does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+        return guestEmail;
     }
 
 
