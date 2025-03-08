@@ -108,6 +108,5 @@ Cancel -> enter host email or groupByHostEmail (required)
 8. *[x] Add Spring dependency injection to the project (use either XML or annotations) to run `App.java` max 1hr (Actual time 1 hour)
     Start to work on the UI layer, break UI layer into several steps, including helper methods:
 10. *[x] 1. Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
-11. *[x] 2. Do `make` and `edit` reservations - 4hrs (Actual time 7 hours)
-12. *[ ] 3. Do `cancel` reservation - 4hrs
+11. *[x] 2. Do `make` and `edit`, `cancel` reservations - 4hrs (Actual time 7 hours)
 13. *[ ] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs
