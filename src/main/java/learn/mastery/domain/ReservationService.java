@@ -100,7 +100,7 @@ public class ReservationService {
         long numOfNights = ChronoUnit.DAYS.between(reservation.getStart_date(), reservation.getEnd_date());
         BigDecimal sumTotal = BigDecimal.ZERO;
         LocalDate enteredDay = reservation.getStart_date();
-        for(long i = 0; i < numOfNights; i++){//need to find which days are weekend
+        for(long i = 0; i < numOfNights; i++){ //need to find which days are weekend
             if(enteredDay.getDayOfWeek() == DayOfWeek.SATURDAY || enteredDay.getDayOfWeek() == DayOfWeek.SUNDAY){
                 sumTotal = sumTotal.add(weekendRate);
             } else {

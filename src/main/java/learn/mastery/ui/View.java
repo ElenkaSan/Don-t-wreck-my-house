@@ -48,7 +48,7 @@ public class View {
     }
 
     public String enterHostEmail() {
-       return io.readString("\nEnter Host Email: ");
+       return io.readString("Enter Host Email: ");
     }
 
     //Host Email: vduffil2m@naver.com
@@ -80,7 +80,7 @@ public class View {
     }
 
     public String enterGuestEmail() {
-        return io.readString("\nEnter Guest Email: ");
+        return io.readString("Enter Guest Email: ");
     }
 
     public Reservation makeReservationDate(){
@@ -89,7 +89,6 @@ public class View {
         LocalDate endDate = io.readLocalDate("Enter End date (MM/dd/yyyy): ");
         reservation.setStart_date(startDate);
         reservation.setEnd_date(endDate);
-
         return reservation;
     }
 
@@ -112,8 +111,8 @@ public class View {
     //Press [Enter] to continue.
     public void displaySummary(Reservation reservation, BigDecimal sumCost) {
         printHeader("Summary");
-        io.println("Start: " + reservation.getStart_date());
-        io.println("End: " + reservation.getEnd_date());
+        io.println("Start: " + reservation.getStart_date().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+        io.println("End: " + reservation.getEnd_date().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         io.println("Total: " + sumCost);
     }
 
@@ -121,8 +120,35 @@ public class View {
         return io.readBoolean(input);
     }
 
-    public void displayEditReservation(){
+    //host vduffil2m@naver.com
+    //guest jhulson8@auda.org.au
+    public Reservation editReservation(List<Reservation> reservations){
+        displayReservations(reservations);
+        int reservationId = Integer.parseInt(io.readString("Enter Reservation ID: "));
+        Reservation reservation = reservations.stream().filter(r-> r.getId() == reservationId).findFirst().orElse(null);
 
+        /* if not correct id input
+        if(reservation == null || reservation.getId() == 0) {
+            io.println("Please enter a valid reservation ID.");
+            return null;
+        }
+         */
+
+        printHeader("Editing Reservation " + reservation.getId());
+        io.readString("Press [Enter] to keep original value.");
+
+        String enterStart = String.format("Start (%s): ", reservation.getStart_date().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+        String enterStartDate = io.readString(enterStart).trim();
+        LocalDate startDate = enterStartDate.isEmpty() ? reservation.getStart_date() : LocalDate.parse(enterStartDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        String enterEnd = String.format("End (%s): ", reservation.getEnd_date().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+        String enterEndDate = io.readString(enterEnd).trim();
+        LocalDate endDate = enterEndDate.isEmpty() ? reservation.getEnd_date() : LocalDate.parse(enterEndDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        reservation.setStart_date(startDate);
+        reservation.setEnd_date(endDate);
+
+        return reservation;
     }
 
 

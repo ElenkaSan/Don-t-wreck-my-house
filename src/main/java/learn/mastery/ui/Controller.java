@@ -134,6 +134,64 @@ public class Controller {
     }
 
     private void editReservation() {
+        view.printHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
+        String hostEmail;
+        List<Reservation> reservations;
+        while (true) {
+            hostEmail = view.enterHostEmail();
+            reservations = reservationService.findByHostEmail(hostEmail);
+            if (reservations == null || reservations.isEmpty()) {
+                String noExist = String.format("Sorry, host does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+
+        String guestEmail;
+        Guest guest = null;
+        while (true) {
+            guestEmail = view.enterGuestEmail();
+            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+            if (guest == null) {
+                String noExist = String.format("Sorry, guest does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+        Host host = reservations.get(0).getHost();
+        view.printHostDetails(host);
+
+        Reservation reservation = view.editReservation(reservations);
+        /*
+        if (reservation == null || reservation.getId() <= 0) {
+            String invalidIdMessage = "Please enter a valid numeric reservation ID.";
+            view.displayStatus(false, invalidIdMessage);
+            return;
+        }
+         */
+        reservation.setGuest(guest);
+        reservation.setHost(reservations.get(0).getHost());
+
+        BigDecimal sumTotal = reservationService.summaryTotal(reservation);
+        view.displaySummary(reservation, sumTotal);
+        boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
+        if(!createOrNo) {
+            String cancelMessage = "Reservation was not updated.";
+            view.displayStatus(false, cancelMessage);
+            view.enterToContinue();
+            return;
+        }
+
+        Result<Reservation> result = reservationService.update(reservation);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Reservation %s updated.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+            view.enterToContinue();
+        }
 
     }
 
