@@ -105,8 +105,9 @@ Cancel -> enter host email or groupByHostEmail (required)
 5. *[x] Start work on the domain layer, 4hrs (Actual time 5 hours)
 6. *[x] Do unit test for the domain, including fixing bugs, 2hrs (Actual time 3 hours)
 7. *[x] Be sure all unit tests pass, be sure added positive & negative cases, 2 hrs (Actual time 4 hours)
-    Start to work on the UI layer:
 8. *[x] Add Spring dependency injection to the project (use either XML or annotations) to run `App.java` max 1hr (Actual time 1 hour)
-9. *[ ] Break UI layer into several steps: make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs
-10. *[ ] Do `edit` and `cancel` reservation including helper methods, 8hrs
-11. *[ ] Be sure all tests pass and the application works without any issue, 2hrs
+    Start to work on the UI layer, break UI layer into several steps, including helper methods:
+10. *[x] 1. Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
+11. *[x] 2. Do `make` and `edit` reservations - 4hrs (Actual time 7 hours)
+12. *[ ] 3. Do `cancel` reservation - 4hrs
+13. *[ ] Be sure all tests pass and the application works without any issues, 2hrs
