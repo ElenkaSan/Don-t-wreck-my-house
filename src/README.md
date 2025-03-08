@@ -110,4 +110,4 @@ Cancel -> enter host email or groupByHostEmail (required)
 10. *[x] 1. Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
 11. *[x] 2. Do `make` and `edit` reservations - 4hrs (Actual time 7 hours)
 12. *[ ] 3. Do `cancel` reservation - 4hrs
-13. *[ ] Be sure all tests pass and the application works without any issues, 2hrs
+13. *[ ] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs

@@ -127,7 +127,7 @@ public class Controller {
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
         } else {
-            String successMessage = String.format("Reservation %s created.", result.getPayload().getId());
+            String successMessage = String.format("Reservation %s created for guest %s.", result.getPayload().getId(), reservation.getGuest().getLastName());
             view.displayStatus(true, successMessage);
             view.enterToContinue();
         }
@@ -188,7 +188,7 @@ public class Controller {
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
         } else {
-            String successMessage = String.format("Reservation %s updated.", result.getPayload().getId());
+            String successMessage = String.format("Reservation %s updated for guest %s.", result.getPayload().getId(), reservation.getGuest().getLastName());
             view.displayStatus(true, successMessage);
             view.enterToContinue();
         }
@@ -196,7 +196,46 @@ public class Controller {
     }
 
     private void cancelReservation() {
+        view.printHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
+        String hostEmail;
+        List<Reservation> reservations;
+        while (true) {
+            hostEmail = view.enterHostEmail();
+            reservations = reservationService.findByHostEmail(hostEmail);
+            if (reservations == null || reservations.isEmpty()) {
+                String noExist = String.format("Sorry, host does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
 
+        String guestEmail;
+        Guest guest = null;
+        while (true) {
+            guestEmail = view.enterGuestEmail();
+            guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+            if (guest == null) {
+                String noExist = String.format("Sorry, guest does not exist.");
+                view.displayStatus(false, noExist);
+            } else {
+                break;
+            }
+        }
+        Host host = reservations.get(0).getHost();
+        view.printHostDetails(host);
+        view.displayReservations(reservations);
+        Reservation reservation = view.displayCancelReservation(reservations);
+        if (reservation != null) {
+            Result<Reservation> result = reservationService.deleteById(reservation.getId(), host.getId());
+            if (result.isSuccess()) {
+                view.printHeader("[Success!] \nReservation " + reservation.getId() + " - for guest " + reservation.getGuest().getLastName() + " with email: " + reservation.getGuest().getEmail() + " removed.");
+            } else {
+                view.printHeader(result.getErrorMessages().get(0));
+            }
+        } else {
+            view.printHeader("Return back to Main Menu");
+        }
     }
 
 

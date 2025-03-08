@@ -151,8 +151,15 @@ public class View {
         return reservation;
     }
 
+    public Reservation displayCancelReservation(List<Reservation> reservations) {
+        displayReservations(reservations);
+        int reservationId = Integer.parseInt(io.readString("Enter Reservation ID: "));
+        Reservation reservation = reservations.stream().filter(r -> r.getId() == reservationId).findFirst().orElse(null);
+        return reservation;
+    }
 
-    //NEED to change
+
+        //NEED to change
     public GenerateRequest getGenerateRequest() {
         printHeader(MainMenuOption.GENERATE.getMessage());
 
