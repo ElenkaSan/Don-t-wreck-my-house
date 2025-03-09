@@ -121,23 +121,24 @@ public class ReservationFileRepository implements ReservationRepository {
     }
 
     private String getFilePath(String host_id) {
-        return Paths.get(directory, host_id + ".csv").toString();
+        return Paths.get(directory, host_id + ".csv").toString(); //making file path together with directory path and host_id
     }
 
-    public void getHostReservationFilePath(String hostId) throws DataException {
-        String filePath = getFilePath(hostId);
+    public void getHostReservationFilePath(String host_id) throws DataException {
+        String filePath = getFilePath(host_id); // making the path
         File file = new File(filePath);
         if (!file.exists()) {
             try (PrintWriter writer = new PrintWriter(file)) {
-                writer.println(HEADER); // Write header so the file is in proper format
+                writer.println(HEADER); // Writing/printing header so the file is in proper format
             } catch (FileNotFoundException ex) {
-                throw new DataException("Could not create reservation file for host: " + hostId, ex);
+                throw new DataException("Could not create reservation file for host: " + host_id, ex);
             }
         }
     }
 
+    //writing to the file for add, update, delete ->
     private void writeAll(List<Reservation> reservations, String host_id) throws DataException {
-        try (PrintWriter writer = new PrintWriter(getFilePath(host_id))) {
+        try (PrintWriter writer = new PrintWriter(getFilePath(host_id))) { //here replace a single file
             writer.println(HEADER);
             for (Reservation guest : reservations) {
                 writer.println(serialize(guest));

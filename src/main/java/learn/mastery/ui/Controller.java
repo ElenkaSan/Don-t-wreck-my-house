@@ -75,7 +75,7 @@ public class Controller {
         view.enterToContinue();
     }
 
-    //used no exist reservation for host
+    //used no exist reservation for host to making reservation
     //Enter Guest Email: iganter9@privacy.gov.au
     //Enter Host Email: arentcome3t@shutterfly.com
     private void makeReservation() {
