@@ -77,6 +77,7 @@ public class ReservationFileRepository implements ReservationRepository {
 
     @Override
     public Reservation add(Reservation reservation) throws DataException {
+        getHostReservationFilePath(reservation.getHost().getId());
         List<Reservation> all = findByHostId(reservation.getHost().getId());
         reservation.setId(all.size() + 1); //need next id inside reservation-test
         all.add(reservation);
@@ -121,6 +122,18 @@ public class ReservationFileRepository implements ReservationRepository {
 
     private String getFilePath(String host_id) {
         return Paths.get(directory, host_id + ".csv").toString();
+    }
+
+    public void getHostReservationFilePath(String hostId) throws DataException {
+        String filePath = getFilePath(hostId);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.println(HEADER); // Write header so the file is in proper format
+            } catch (FileNotFoundException ex) {
+                throw new DataException("Could not create reservation file for host: " + hostId, ex);
+            }
+        }
     }
 
     private void writeAll(List<Reservation> reservations, String host_id) throws DataException {

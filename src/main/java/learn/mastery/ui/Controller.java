@@ -75,39 +75,77 @@ public class Controller {
         view.enterToContinue();
     }
 
+    //used no exist reservation for host
+    //Enter Guest Email: iganter9@privacy.gov.au
+    //Enter Host Email: arentcome3t@shutterfly.com
     private void makeReservation() {
         view.printHeader(MainMenuOption.MAKE_RESERVATION.getMessage());
         String guestEmail = getGuest();
         Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
 
-        String hostEmail = getHost();
+        String hostEmail = view.enterHostEmail();
         List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
+        if (reservations == null || reservations.isEmpty()) {
+            view.printHeader("There are currently no reservations for this host. Enter this email again to create a reservation.");
+            String hostEmail2 = view.enterHostEmail();
+            List<Host> hosts = hostService.findByHostEmail(hostEmail2);
+            if (hosts == null) {
+                String noExist = String.format("Sorry, host does not exist.");
+                view.displayStatus(false, noExist);
+                return;
+            }
+            Host host = hosts.get(0);
+            view.printHostDetails(host);
 
-        Host host = reservations.get(0).getHost();
-        view.printHostDetails(host);
-        view.displayReservations(reservations);
+            Reservation reservation = view.makeReservationDate();
+            reservation.setGuest(guest);
+            reservation.setHost(host);
 
-        Reservation reservation = view.makeReservationDate();
-        reservation.setGuest(guest);
-        reservation.setHost(reservations.get(0).getHost());
+            BigDecimal sumTotal = reservationService.summaryTotal(reservation);
+            view.displaySummary(reservation, sumTotal);
+            boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
+            if(!createOrNo) {
+                String cancelMessage = "Reservation not created.";
+                view.displayStatus(false, cancelMessage);
+                view.enterToContinue();
+                return;
+            }
 
-        BigDecimal sumTotal = reservationService.summaryTotal(reservation);
-        view.displaySummary(reservation, sumTotal);
-        boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
-        if(!createOrNo) {
-            String cancelMessage = "Reservation not created.";
-            view.displayStatus(false, cancelMessage);
-            view.enterToContinue();
-            return;
-        }
-
-        Result<Reservation> result = reservationService.add(reservation);
-        if (!result.isSuccess()) {
-            view.displayStatus(false, result.getErrorMessages());
+            Result<Reservation> result = reservationService.add(reservation);
+            if (!result.isSuccess()) {
+                view.displayStatus(false, result.getErrorMessages());
+            } else {
+                String successMessage = String.format("Reservation %s created for guest %s.", result.getPayload().getId(), reservation.getGuest().getLastName());
+                view.displayStatus(true, successMessage);
+                view.enterToContinue();
+            }
         } else {
-            String successMessage = String.format("Reservation %s created for guest %s.", result.getPayload().getId(), reservation.getGuest().getLastName());
-            view.displayStatus(true, successMessage);
-            view.enterToContinue();
+            Host host = reservations.get(0).getHost();
+            view.printHostDetails(host);
+            view.displayReservations(reservations);
+
+            Reservation reservation = view.makeReservationDate();
+            reservation.setGuest(guest);
+            reservation.setHost(host);
+
+            BigDecimal sumTotal = reservationService.summaryTotal(reservation);
+            view.displaySummary(reservation, sumTotal);
+            boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
+            if (!createOrNo) {
+                String cancelMessage = "Reservation not created.";
+                view.displayStatus(false, cancelMessage);
+                view.enterToContinue();
+                return;
+            }
+
+            Result<Reservation> result = reservationService.add(reservation);
+            if (!result.isSuccess()) {
+                view.displayStatus(false, result.getErrorMessages());
+            } else {
+                String successMessage = String.format("Reservation %s created for guest %s.", result.getPayload().getId(), reservation.getGuest().getLastName());
+                view.displayStatus(true, successMessage);
+                view.enterToContinue();
+            }
         }
     }
 
@@ -164,7 +202,6 @@ public class Controller {
 
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
-        view.displayReservations(reservations);
         Reservation reservation = view.displayCancelReservation(reservations);
         if (reservation != null) {
             Result<Reservation> result = reservationService.deleteById(reservation.getId(), host.getId());
