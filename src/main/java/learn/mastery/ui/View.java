@@ -42,24 +42,10 @@ public class View {
         io.readString("Press [Enter] to continue.");
     }
 
-    public void displayException(Exception ex) {
-        printHeader("An error occurred:");
-        io.println(ex.getMessage());
-    }
-
     public String enterHostEmail() {
        return io.readString("Enter Host Email: ");
     }
 
-    //Host Email: vduffil2m@naver.com
-    //Queyeiro: Arlington, VA
-    //=================
-    //ID: 2, 2021-03-29 - 2021-04-03, Guest: Milham, Mari, Email: mmilhampp@usatoday.com, Phone: (518) 9967730.
-
-    //Host Email: sgeorghioua1@fema.gov
-    //Georghiou: Sarasota, FL
-    //=================
-    //ID: 5, 2021-04-12 - 2021-04-15, Guest: Olner, Bradly, Email: bolnerny@amazon.co.jp, Phone: (702) 6972609.
     public void displayReservations(List<Reservation> reservations) {
         for (Reservation reservation : reservations) {
             io.printf("ID: %s, %s - %s, Guest: %s, %s, Email: %s, Phone: %s.%n",
@@ -92,23 +78,6 @@ public class View {
         return reservation;
     }
 
-    //Make a Reservation
-    //==================
-    //Enter Host Email: vduffil2m@naver.com
-    //Enter Guest Email: jhulson8@auda.org.au
-    //Summary
-    //=======
-    //Start: 03/03/2025
-    //End: 03/05/2025
-    //Total: 566
-    //Is this okay? [y/n]: y
-    //Checking for overlaps with start: 2025-03-03, end: 2025-03-05
-    //Existing reservations: []
-    //
-    //Success
-    //=======
-    //Reservation 18 created.
-    //Press [Enter] to continue.
     public void displaySummary(Reservation reservation, BigDecimal sumCost) {
         printHeader("Summary");
         io.println("Start: " + reservation.getStart_date().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
@@ -120,19 +89,14 @@ public class View {
         return io.readBoolean(input);
     }
 
-    //host vduffil2m@naver.com
-    //guest jhulson8@auda.org.au
     public Reservation editReservation(List<Reservation> reservations){
         displayReservations(reservations);
-        int reservationId = Integer.parseInt(io.readString("Enter Reservation ID: "));
+        int reservationId = io.readInt("Enter Reservation ID: ");
         Reservation reservation = reservations.stream().filter(r-> r.getId() == reservationId).findFirst().orElse(null);
 
-        /* if not correct id input
-        if(reservation == null || reservation.getId() == 0) {
-            io.println("Please enter a valid reservation ID.");
+        if(reservationId <= 0 || reservation == null) {
             return null;
         }
-         */
 
         printHeader("Editing Reservation " + reservation.getId());
         io.readString("Press [Enter] to keep original value.");
@@ -153,33 +117,9 @@ public class View {
 
     public Reservation displayCancelReservation(List<Reservation> reservations) {
         displayReservations(reservations);
-        int reservationId = Integer.parseInt(io.readString("Enter Reservation ID: "));
+        int reservationId = io.readInt("Enter Reservation ID: ");
         Reservation reservation = reservations.stream().filter(r -> r.getId() == reservationId).findFirst().orElse(null);
         return reservation;
-    }
-
-
-        //NEED to change
-    public GenerateRequest getGenerateRequest() {
-        printHeader(MainMenuOption.GENERATE.getMessage());
-
-        LocalDate start = io.readLocalDate("Select a start date [MM/dd/yyyy]: ");
-        if (start.isAfter(LocalDate.now())) {
-            displayStatus(false, "Start date must be in the past.");
-            return null;
-        }
-
-        LocalDate end = io.readLocalDate("Select an end date [MM/dd/yyyy]: ");
-        if (end.isAfter(LocalDate.now()) || end.isBefore(start)) {
-            displayStatus(false, "End date must be in the past and after the start date.");
-            return null;
-        }
-
-        GenerateRequest request = new GenerateRequest();
-        request.setStart(start);
-        request.setEnd(end);
-        request.setCount(io.readInt("Generate how many random forages [1-500]?: ", 1, 500));
-        return request;
     }
 
     public void displayStatus(boolean success, String message) {

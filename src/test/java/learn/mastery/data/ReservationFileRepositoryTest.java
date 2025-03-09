@@ -46,19 +46,15 @@ class ReservationFileRepositoryTest {
         assertEquals(2, host.size());
     }
 
-    //no sure i need this
-
     @Test
     void shouldFindById() {
         Reservation result = repository.findById(1, "9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         assertNotNull(result);
-        //assertEquals(1, result.getId());
         assertEquals(start_date, result.getStart_date());
         assertEquals(end_date, result.getEnd_date());
         assertEquals("18", result.getGuest().getId());
         assertEquals(new BigDecimal(870), result.getTotal());
     }
-
 
     @Test
     void shouldFindByDateAndHostIdFileName() {
@@ -80,15 +76,19 @@ class ReservationFileRepositoryTest {
         assertEquals(1, reservations.size());
     }
 
-    /* no sure need it here
     @Test
-    void shouldFindFileByGuestEmail() throws DataException {
-        List<Reservation> reservations = repository.findByGuestEmail("jjudgkinsh@goo.gl");
-        assertNotNull(reservations);
-        assertFalse(reservations.isEmpty());
-        assertEquals(1, reservations.size());
+    void shouldNotFindFileByNullGuestId() throws DataException {
+        List<Reservation> reservations = repository.findByHostId(null);
+        assertTrue(reservations.isEmpty());
+        assertEquals(0, reservations.size());
     }
-     */
+
+    @Test
+    void shouldNotFindFileByWrongHostId() throws DataException {
+        List<Reservation> reservations = repository.findByHostId("dsfs");
+        assertTrue(reservations.isEmpty());
+        assertEquals(0, reservations.size());
+    }
 
     //file guests-test.csv has
     //guest_id,first_name,last_name,email,phone,state
@@ -141,6 +141,33 @@ class ReservationFileRepositoryTest {
         assertNull(actual);
         List<Reservation> resultDeleted = repository.findByHostId("9d469342-ad0b-4f5a-8d28-e81e690ba29a");
         assertEquals(1, resultDeleted.size());
+    }
 
+    @Test
+    void shouldNotFindByWroHostId() throws DataException {
+        List<Reservation> host = repository.findByHostId(null);
+        assertTrue(host.isEmpty());
+        assertEquals(0, host.size());
+    }
+
+    @Test
+    void shouldNotFindByNullHostId() {
+        Reservation result = repository.findById(1, null);
+        assertNull(result);
+        assertTrue(result == null);
+    }
+
+    @Test
+    void shouldNotFindByWrongId() {
+        Reservation result = repository.findById(0, "9d469342-ad0b-4f5a-8d28-e81e690ba29a");
+        assertNull(result);
+        assertTrue(result == null);
+    }
+
+    @Test
+    void shouldNotFindByNoExistedDate() {
+        List<Reservation> date = repository.findByDate("9d469342-ad0b-4f5a-8d28-e81e690ba29a", LocalDate.of(2025,03,20));
+        assertTrue(date.isEmpty());
+        assertEquals(0, date.size());
     }
 }

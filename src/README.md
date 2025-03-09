@@ -24,7 +24,7 @@
 	│   │           │       HostService.java
 	│   │           │       ReservationService.java
 	│   │           │       Response.java
-	│   │           │       Result.java - should think if need it
+	│   │           │       Result.java
 	│   │           │
 	│   │           |───models
 	│   │           │       Guest.java
@@ -54,13 +54,15 @@
 	                └───domain
 	                        GuestServiceTest.java
 	                        HostServiceTest.java
-                                ReservationServiceTest.java
+                            ReservationServiceTest.java
 
 ```
 
 ### Class details & design
 
 ![class.png](/src/class.png)
+
+![data.png](data.png)
 
 ```
 UI Reservation 
@@ -106,7 +108,8 @@ Cancel -> enter host email or groupByHostEmail (required)
 6. *[x] Do unit test for the domain, including fixing bugs, 2hrs (Actual time 3 hours)
 7. *[x] Be sure all unit tests pass, be sure added positive & negative cases, 2 hrs (Actual time 4 hours)
 8. *[x] Add Spring dependency injection to the project (use either XML or annotations) to run `App.java` max 1hr (Actual time 1 hour)
-    Start to work on the UI layer, break UI layer into several steps, including helper methods:
-10. *[x] 1. Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
-11. *[x] 2. Do `make` and `edit`, `cancel` reservations - 4hrs (Actual time 7 hours)
-13. *[ ] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs
+
+ Start to work on the UI layer, break UI layer into several steps, including helper methods:
+9. *[x] Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
+10. *[x] Do `make` and `edit`, `cancel` reservations - 4hrs (Actual time 7 hours)
+11. *[x] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs  (Actual time 4 hours)

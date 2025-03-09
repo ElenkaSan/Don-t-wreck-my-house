@@ -3,23 +3,16 @@ package learn.mastery.data;
 import learn.mastery.models.Guest;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//guest_id,first_name,last_name,email,phone,state
 public class GuestFileRepository implements GuestRepository {
 
     private static final String DELIMITER = ",";
     private static final String DELIMITER_REPLACEMENT = "@@@";
-    private static final String HEADER = "guest_id,first_name,last_name,email,phone,state";
+ //   private static final String HEADER = "guest_id,first_name,last_name,email,phone,state";
     private final String filePath;
-    //private final String directory;
-
-   // public GuestFileRepository(String directory) {
-   //     this.directory = directory;
-   // }
 
     public GuestFileRepository(String filePath) {
         this.filePath = filePath;
@@ -29,7 +22,6 @@ public class GuestFileRepository implements GuestRepository {
     public List<Guest> findAll() throws DataException {
         ArrayList<Guest> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-    //    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(date)))) {
             reader.readLine();
                     for(String line = reader.readLine(); line != null; line = reader.readLine()){
                         Guest guest = deserialize(line);
@@ -58,27 +50,8 @@ public class GuestFileRepository implements GuestRepository {
                 .collect(Collectors.toList());
     }
 
-    /*
-    private String getFilePath(LocalDate date) {
-        return Paths.get(directory, date + ".csv").toString();
-    }
-     */
-
     //helper methods - private because they are only needed inside ForagerFileRepository:
     //Other classes do not need to call these methods directly.
-    /*
-    private void writeAll(List<Guest> guests) throws DataException {
-        try (PrintWriter writer = new PrintWriter(filePath)) {
-            writer.println(HEADER);
-            for (Guest reservation : guests) {
-                writer.println(serialize(reservation));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new DataException(ex);
-        }
-    }
-     */
-
     private String restore(String value) {
         return value.replace(DELIMITER_REPLACEMENT, DELIMITER);
     }

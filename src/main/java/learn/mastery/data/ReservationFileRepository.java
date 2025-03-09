@@ -21,12 +21,6 @@ public class ReservationFileRepository implements ReservationRepository {
     public ReservationFileRepository(String directory) {
         this.directory = directory;
     }
-/*
-    @Override
-    public List<Reservation> findAll() throws DataException {
-        return List.of();
-    }
- */
 
     //find file by host_id
     @Override
@@ -49,18 +43,13 @@ public class ReservationFileRepository implements ReservationRepository {
     //under host_id...
     @Override
     public Reservation findById(int id, String host_id) throws DataException {
-        /*
-         String filePath = host_id + ".csv"; //making path to host_id file name
-        List<Reservation> reservations = findByHostId(filePath);
-        return reservations.stream()
-         */
         return findByHostId(host_id).stream()
                 .filter(r -> r.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    //taking reservation by host_id
+    //taking reservation by host_id with date
     @Override
     public List<Reservation> findByDate(String host_id, LocalDate date) throws DataException {
         return findByHostId(host_id).stream() //getting all reservation for this host
@@ -70,14 +59,14 @@ public class ReservationFileRepository implements ReservationRepository {
 
     @Override
     public List<Reservation> findByGuestId(String guest_id) throws DataException {
-        List<Reservation> reservations = new ArrayList<>();
+        List<Reservation> reservations = new ArrayList<>(); //holding reservations
         File folder = new File(directory);
-        File[] files = folder.listFiles();
+        File[] files = folder.listFiles(); //returning each host_id file in the directory
 
         if (files != null) {
             for (File file : files) {
-                System.out.println("Checking file: " + file.getName());
-                List<Reservation> hostReservations = findByHostId(file.getName().replace(".csv", ""));
+               // System.out.println("Checking file: " + file.getName());
+                List<Reservation> hostReservations = findByHostId(file.getName().replace(".csv", "")); //keeping just host_id to find all reservations for this host
                 reservations.addAll(hostReservations.stream()
                         .filter(r -> r.getGuest().getId().equals(guest_id))
                         .collect(Collectors.toList()));
@@ -86,42 +75,15 @@ public class ReservationFileRepository implements ReservationRepository {
         return reservations;
     }
 
-    /* no sure i need it here
-    @Override
-    public List<Reservation> findByGuestEmail(String email) throws DataException {
-        List<Reservation> reservations = new ArrayList<>();
-        File folder = new File(directory);
-        File[] files = folder.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                List<Reservation> hostReservations = findByHostId(file.getName().replace(".csv", ""));
-                reservations.addAll(hostReservations.stream()
-                        .filter(r -> r.getGuest().getEmail().equalsIgnoreCase(email))
-                        .collect(Collectors.toList()));
-            }
-        }
-        return reservations;
-    }
-     */
-
-    //working
     @Override
     public Reservation add(Reservation reservation) throws DataException {
         List<Reservation> all = findByHostId(reservation.getHost().getId());
         reservation.setId(all.size() + 1); //need next id inside reservation-test
-        /* if id is next one...
-            int nextId = all.stream()
-            .mapToInt(Reservation::getId)
-            .max()
-            .orElse(0) + 1; // Ensures IDs are always increasing
-            reservation.setId(nextId);
-         */
         all.add(reservation);
         writeAll(all, reservation.getHost().getId());
         return reservation;
     }
 
-    //working
     @Override
     public boolean update(Reservation reservation) throws DataException {
         if (reservation == null) {
@@ -135,7 +97,7 @@ public class ReservationFileRepository implements ReservationRepository {
                 return true;
             }
         }
-        /* or
+        /* or the same
          for (int i = 0; i < reservations.size(); i++) {
             if (reservations.get(i).getId() == reservation.getId() &&
                     reservations.get(i).getHost().getId().equals(reservation.getHost().getId())) {
@@ -199,5 +161,4 @@ public class ReservationFileRepository implements ReservationRepository {
 
         return result;
     }
-
 }

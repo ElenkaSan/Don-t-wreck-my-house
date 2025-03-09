@@ -10,8 +10,6 @@ public interface ReservationRepository {
 
     List<Reservation> findByGuestId(String guest_id)  throws DataException;
 
-   // List<Reservation> findByGuestEmail(String email) throws DataException;
-
     List<Reservation> findByDate(String host_id, LocalDate date) throws DataException;
 
     Reservation findById(int id, String host_id) throws DataException;

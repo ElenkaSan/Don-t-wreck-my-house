@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 public class ReservationRepositoryDouble implements ReservationRepository {
     private final ArrayList<Reservation> reservations = new ArrayList<>();
 
-    final LocalDate start_date = LocalDate.of(2020, 07, 01);
-    final LocalDate end_date = LocalDate.of(2020, 07, 02);
+    final LocalDate start_date = LocalDate.of(2025, 03, 13);
+    final LocalDate end_date = LocalDate.of(2025, 03, 14);
 
     //id,start_date,end_date,guest_id,total
     //1,2020-07-01,2020-07-02,18,870
@@ -26,11 +26,22 @@ public class ReservationRepositoryDouble implements ReservationRepository {
         reservation.setGuest(GuestRepositoryDouble.guest1);
         reservation.setTotal(new BigDecimal(870));
         Host host = new Host();
-        host.setId("f92aa2ac-5370-4c61-87e3-3f18a81ce2e6");  // Matching host_id
+        host.setId("f92aa2ac-5370-4c61-87e3-3f18a81ce2e6");  // Matching host_id; rates 477,596.25
         reservation.setHost(host);
         reservations.add(reservation);
-    }
 
+        Reservation reservationTwo = new Reservation();
+        reservationTwo.setId(2);
+        reservationTwo.setStart_date(LocalDate.of(2020, 07, 01));
+        reservationTwo.setEnd_date(LocalDate.of(2020, 07, 02));
+        reservationTwo.setGuest(GuestRepositoryDouble.guest2);  // Different guest
+        reservationTwo.setTotal(new BigDecimal(680));
+        Host host2 = new Host();
+        host2.setId("3edda6bc-ab95-49a8-8962-d50b53f84b15");  // Same host_id; rates 340,425
+        host2.setEmail("eyearnes0@sfgate.com");
+        reservationTwo.setHost(host2);
+        reservations.add(reservationTwo);
+    }
 
     @Override
     public List<Reservation> findByHostId(String host_id) throws DataException {

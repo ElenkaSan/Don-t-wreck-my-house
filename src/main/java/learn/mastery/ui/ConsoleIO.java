@@ -46,26 +46,6 @@ public class ConsoleIO {
         }
     }
 
-    public double readDouble(String prompt) {
-        while (true) {
-            try {
-                return Double.parseDouble(readRequiredString(prompt));
-            } catch (NumberFormatException ex) {
-                println(INVALID_NUMBER);
-            }
-        }
-    }
-
-    public double readDouble(String prompt, double min, double max) {
-        while (true) {
-            double result = readDouble(prompt);
-            if (result >= min && result <= max) {
-                return result;
-            }
-            println(String.format(NUMBER_OUT_OF_RANGE, min, max));
-        }
-    }
-
     public int readInt(String prompt) {
         while (true) {
             try {

@@ -1,7 +1,5 @@
 package learn.mastery.models;
 
-import java.time.LocalDate;
-
 //guest_id,first_name,last_name,email,phone,state
 public class Guest {
 
@@ -11,7 +9,6 @@ public class Guest {
     private String email;
     private String phone;
     private String state;
-   // private Reservation reservation;
 
     public Guest() {
     }
@@ -23,7 +20,6 @@ public class Guest {
         this.email = email;
         this.phone = phone;
         this.state = state;
-       // this.reservation = reservation;
     }
 
     public String getId() {
@@ -73,14 +69,4 @@ public class Guest {
     public void setState(String state) {
         this.state = state;
     }
-
-   /*
-    public Reservation getReservation() {
-        return reservation;
-    }
-
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
-    }
-    */
 }

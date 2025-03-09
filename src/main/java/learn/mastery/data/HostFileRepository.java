@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate
 public class HostFileRepository implements HostRepository {
     private static final String DELIMITER = ",";
     private static final String DELIMITER_REPLACEMENT = "@@@";
-    private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
+//    private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
     private final String filePath;
 
     public HostFileRepository(String filePath) {
@@ -23,7 +22,6 @@ public class HostFileRepository implements HostRepository {
     public List<Host> findAll() throws DataException {
         ArrayList<Host> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            //    try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(date)))) {
             reader.readLine();
             for(String line = reader.readLine(); line != null; line = reader.readLine()){
                 Host host = deserialize(line);
@@ -50,31 +48,10 @@ public class HostFileRepository implements HostRepository {
         return findAll().stream()
                 .filter(i -> i.getEmail().equalsIgnoreCase(email))
                 .collect(Collectors.toList());
-        /*
-        ArrayList<Host> result = new ArrayList<>();
-        for(Host host : findAll()) {
-            if(host.getEmail().equals(email)){
-                result.add(host);
-            }
-        }
-        return result;
-         */
     }
 
     //helper methods - private because they are only needed inside ForagerFileRepository:
     //Other classes do not need to call these methods directly.
-     /*
-    private void writeAll(List<Host> hosts) throws DataException {
-        try (PrintWriter writer = new PrintWriter(filePath)) {
-            writer.println(HEADER);
-            for (Host reservation : hosts) {
-                writer.println(serialize(reservation));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new DataException(ex);
-        }
-    }
-      */
 
     private String restore(String value) {
         return value.replace(DELIMITER_REPLACEMENT, DELIMITER);

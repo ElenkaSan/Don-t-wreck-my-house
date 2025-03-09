@@ -52,9 +52,6 @@ public class Controller {
                 case CANCEL_RESERVATION:
                     cancelReservation();
                     break;
-                case GENERATE:
-               //     generate();
-                    break;
             }
         } while (option != MainMenuOption.EXIT);
     }
@@ -80,11 +77,12 @@ public class Controller {
 
     private void makeReservation() {
         view.printHeader(MainMenuOption.MAKE_RESERVATION.getMessage());
+        String guestEmail = getGuest();
+        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+
         String hostEmail = getHost();
         List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
-        String guestEmail = getGuest();
-        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
         view.displayReservations(reservations);
@@ -115,22 +113,23 @@ public class Controller {
 
     private void editReservation() {
         view.printHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
+        String guestEmail = getGuest();
+        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+
         String hostEmail = getHost();
         List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
-        String guestEmail = getGuest();
-        Guest guest = guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
 
         Reservation reservation = view.editReservation(reservations);
-        /*
-        if (reservation == null || reservation.getId() <= 0) {
-            String invalidIdMessage = "Please enter a valid numeric reservation ID.";
-            view.displayStatus(false, invalidIdMessage);
+
+        if (reservation == null) {
+            String wrongId = String.format("Was enter no existed reservation ID. Return back to Main Menu.");
+            view.displayStatus(false, wrongId);
             return;
         }
-         */
+
         reservation.setGuest(guest);
         reservation.setHost(reservations.get(0).getHost());
 
@@ -138,8 +137,8 @@ public class Controller {
         view.displaySummary(reservation, sumTotal);
         boolean createOrNo = view.confirmation("Is this okay? [y/n]: ");
         if(!createOrNo) {
-            String cancelMessage = "Reservation was not updated.";
-            view.displayStatus(false, cancelMessage);
+            String cancelMessage = String.format("Reservation was not updated.");
+            view.printHeader(cancelMessage);
             view.enterToContinue();
             return;
         }
@@ -155,14 +154,13 @@ public class Controller {
 
     }
 
-    //vduffil2m@naver.com jhulson8@auda.org.au
     private void cancelReservation() {
         view.printHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
-        String hostEmail = getHost();
-        List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
-
         String guestEmail = getGuest();
         guestService.findByGuestEmail(guestEmail).stream().findFirst().orElse(null);
+
+        String hostEmail = getHost();
+        List<Reservation> reservations = reservationService.findByHostEmail(hostEmail);
 
         Host host = reservations.get(0).getHost();
         view.printHostDetails(host);
@@ -176,7 +174,8 @@ public class Controller {
                 view.printHeader(result.getErrorMessages().get(0));
             }
         } else {
-            view.printHeader("Return back to Main Menu");
+            String wrongId = String.format("Was enter no existed reservation ID. Return back to Main Menu.");
+            view.displayStatus(false, wrongId);
         }
     }
 
@@ -212,15 +211,4 @@ public class Controller {
         }
         return guestEmail;
     }
-
-
-    /*
-    private void generate() throws DataException {
-        GenerateRequest request = view.getGenerateRequest();
-        if (request != null) {
-            int count = reservationService.generate(request.getStart(), request.getEnd(), request.getCount());
-            view.displayStatus(true, String.format("%s reservation generated.", count));
-        }
-    }
-     */
 }

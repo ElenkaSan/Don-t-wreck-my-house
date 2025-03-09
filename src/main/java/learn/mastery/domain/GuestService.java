@@ -24,6 +24,4 @@ public class GuestService {
     public List<Guest> findByGuestEmail(String email) throws DataException {
         return repository.findByGuestEmail(email);
     }
-
-
 }

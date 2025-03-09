@@ -10,7 +10,6 @@ import learn.mastery.models.Reservation;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -47,13 +46,10 @@ public class ReservationService {
     public List<Reservation> findByHostEmail(String hostEmail) throws DataException {
         Host host = hostRepository.findByHostEmail(hostEmail).stream().findFirst().orElse(null);
         if (host == null) {
-   //         System.out.println("\nNo host found for email: " + hostEmail);
-            return null; // No host found
+            return null;
         }
-     //   System.out.println("\n" + host.getLastName() + ": " + host.getCity() + ", " + host.getState());
         List<Reservation> reservations = reservationRepository.findByHostId(host.getId());
         reservations.sort(Comparator.comparing(Reservation::getStart_date)); // Sort by start date
-  //      System.out.println("\n" + host.getId());
         for (Reservation reservation : reservations) {
             reservation.setHost(host);
             Guest guest = guestRepository.findById(reservation.getGuest().getId());
@@ -61,10 +57,6 @@ public class ReservationService {
         }
         return reservations;
     }
-
-  //  public Host findHostByEmail(String hostEmail) throws DataException {
-  //      return hostRepository.findByHostEmail(hostEmail).stream().findFirst().orElse(null);
-  //  }
 
     public Result<Reservation> add(Reservation reservation) throws DataException {
         Result<Reservation> result = validate(reservation);
@@ -74,12 +66,12 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByHostId(reservation.getHost().getId());
         //declarative solution cannot be duplicated
         //id,start_date,end_date,guest_id,total
-        boolean duplicate =  reservations.stream()
+        boolean duplicate = reservations.stream()
                 .anyMatch(r -> reservation.getStart_date().equals(r.getStart_date())
                         && reservation.getEnd_date().equals(r.getEnd_date())
                         && reservation.getGuest().getId().equals(r.getGuest().getId())
                         && reservation.getTotal().equals(r.getTotal()));
-        if(duplicate){
+        if (duplicate) {
             result.addErrorMessage("Duplicate Reservation is not allowed");
             return result;
         }
@@ -100,8 +92,8 @@ public class ReservationService {
         long numOfNights = ChronoUnit.DAYS.between(reservation.getStart_date(), reservation.getEnd_date());
         BigDecimal sumTotal = BigDecimal.ZERO;
         LocalDate enteredDay = reservation.getStart_date();
-        for(long i = 0; i < numOfNights; i++){ //need to find which days are weekend
-            if(enteredDay.getDayOfWeek() == DayOfWeek.SATURDAY || enteredDay.getDayOfWeek() == DayOfWeek.SUNDAY){
+        for (long i = 0; i < numOfNights; i++) { //need to find which days are weekend
+            if (enteredDay.getDayOfWeek() == DayOfWeek.SATURDAY || enteredDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 sumTotal = sumTotal.add(weekendRate);
             } else {
                 sumTotal = sumTotal.add(daysRate);
@@ -113,7 +105,7 @@ public class ReservationService {
 
     public Result<Reservation> update(Reservation reservation) throws DataException {
         Result<Reservation> result = validate(reservation);
-        if(reservation.getId() <= 0) {
+        if (reservation.getId() <= 0) {
             result.addErrorMessage("Reservation `id` is required.");
         }
         if (!result.isSuccess()) {
@@ -121,24 +113,24 @@ public class ReservationService {
         }
         List<Reservation> existing = reservationRepository.findByHostId(reservation.getHost().getId());
         if (existing == null) {
-         result.addErrorMessage("The Host Id " + reservation.getHost().getId() + " is not found.");
+            result.addErrorMessage("The Host Id " + reservation.getHost().getId() + " is not found.");
             return result;
         }
-        boolean duplicate =  existing.stream()
+        boolean duplicate = existing.stream()
                 .anyMatch(r -> reservation.getId() != r.getId()
                         && reservation.getStart_date().equals(r.getStart_date())
                         && reservation.getEnd_date().equals(r.getEnd_date())
                         && reservation.getGuest().getId().equals(r.getGuest().getId())
                         && reservation.getTotal().equals(r.getTotal()));
-        if(duplicate){
+        if (duplicate) {
             result.addErrorMessage("Duplicate Reservation is not allowed");
             return result;
         }
         if (!result.isSuccess()) {
             return result;
         }
-        if(result.isSuccess()){
-            if(reservationRepository.update(reservation)) {
+        if (result.isSuccess()) {
+            if (reservationRepository.update(reservation)) {
                 result.setPayload(reservation);
             } else {
                 String message = String.format("Reservation id %s was not found.", reservation.getId());
@@ -151,7 +143,7 @@ public class ReservationService {
     public Result<Reservation> deleteById(int id, String host_id) throws DataException {
         Result<Reservation> result = new Result<>();
         List<Reservation> all = reservationRepository.findByHostId(host_id);
-        if(all == null || all.isEmpty()){
+        if (all == null || all.isEmpty()) {
             result.addErrorMessage("Could not found the reservation");
             return result;
         }
@@ -160,6 +152,11 @@ public class ReservationService {
             result.addErrorMessage("Reservation " + id + " not found for this host " + host_id);
             return result;
         }
+        if (remove.getEnd_date().isBefore(LocalDate.now())) {
+            result.addErrorMessage("Error, cannot cancel past reservations.");
+            return result;
+        }
+
         reservationRepository.deleteById(id, host_id);
         result.setPayload(remove);
         return result;
@@ -175,7 +172,7 @@ public class ReservationService {
 
     private Result<Reservation> validateNulls(Reservation reservation) {
         Result<Reservation> result = new Result<>();
-        if(reservation == null) {
+        if (reservation == null) {
             result.addErrorMessage("Reservation can not be null");
             return result;
         }
@@ -185,7 +182,10 @@ public class ReservationService {
             return result;
         }
 
-        //need more work on it
+        if (reservation.getStart_date().isBefore(LocalDate.now())) {
+            result.addErrorMessage("Reservations must be made for today or a future date.");
+        }
+
         List<Reservation> overlappingDates = reservationRepository.findByDate(reservation.getHost().getId(), reservation.getStart_date()).stream()
                 .filter(existing -> reservation.getId() != existing.getId())
                 .filter(existing ->
@@ -194,40 +194,10 @@ public class ReservationService {
                 )
                 .collect(Collectors.toList());
 
-                /*
-                .anyMatch(existing ->reservation.getId() !=  existing.getId()
-                && existing.getEnd_date().isBefore(reservation.getEnd_date())
-                && existing.getStart_date().isAfter(reservation.getEnd_date()));
-                 */
-       //WORKING
-       // System.out.println("Checking for overlaps with start: " + reservation.getStart_date() + ", end: " + reservation.getEnd_date());
-      //  System.out.println("Existing reservations: " + overlappingDates);
-
-        if(!overlappingDates.isEmpty()) {
+        if (!overlappingDates.isEmpty()) {
             result.addErrorMessage("The reservation may never overlap existing reservation dates.");
             return result;
         }
-
-        //    if(reservation.getGuest().getEmail() == null || reservation.getGuest().getEmail().trim().length() == 0) {
-    //        result.addErrorMessage("Guest email is required.");
-    //    }
-
-        //    if(reservation.getStart_date() == null || reservation.getEnd_date() == null) {
-        //            result.addErrorMessage("Reservation start and end dates are required.");
-        //        }
-
-    //    if(reservation.getHost().getEmail() == null || reservation.getHost().getEmail().trim().length() == 0) {
-     //       result.addErrorMessage("Host email is required.");
-     //   }
-
-  //      if (reservation.getStart_date().isBefore(LocalDate.now()) || reservation.getEnd_date().isAfter(LocalDate.now())) {
-   //         result.addErrorMessage("Reservation start and end date cannot be in the past.");
-    //    }
-
-    //    if(reservation.getStart_date() == reservation.getStart_date() || reservation.getEnd_date() == reservation.getEnd_date() ) {
-      //      result.addErrorMessage("Reservation start and end dates can be the same dates.");
-       // }
-
         return result;
     }
 }
