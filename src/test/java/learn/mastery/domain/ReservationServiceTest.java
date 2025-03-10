@@ -6,6 +6,7 @@ import learn.mastery.data.HostRepositoryDouble;
 import learn.mastery.data.ReservationRepositoryDouble;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -16,13 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ReservationServiceTest {
 
-    ReservationService service = new ReservationService(
-            new ReservationRepositoryDouble(),
-            new GuestRepositoryDouble(),
-            new HostRepositoryDouble());
-
+    ReservationService service;
     final LocalDate start_date = LocalDate.of(2025, 03, 13);
     final LocalDate end_date = LocalDate.of(2025, 03, 14);
+
+    @BeforeEach
+    void setup() {
+        ReservationRepositoryDouble resRepository = new ReservationRepositoryDouble();
+        GuestRepositoryDouble guestRepository = new GuestRepositoryDouble();
+        HostRepositoryDouble hostRepository = new HostRepositoryDouble();
+        service = new ReservationService(resRepository, guestRepository, hostRepository);
+    }
 
     @Test
     void shouldFindByHostEmail() throws DataException {

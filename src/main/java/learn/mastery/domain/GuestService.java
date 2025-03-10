@@ -6,6 +6,8 @@ import learn.mastery.models.Guest;
 
 import java.util.List;
 
+//A Java method can return at most one value. If we need two or more values, we must create a new data type
+//that encapsulates the values and return an instance of the type.
 public class GuestService {
     private final GuestRepository repository;
 

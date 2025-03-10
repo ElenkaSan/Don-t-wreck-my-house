@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//It uses a file to store its data.
 public class HostFileRepository implements HostRepository {
     private static final String DELIMITER = ",";
     private static final String DELIMITER_REPLACEMENT = "@@@";
@@ -50,9 +51,10 @@ public class HostFileRepository implements HostRepository {
                 .collect(Collectors.toList());
     }
 
-    //helper methods - private because they are only needed inside ForagerFileRepository:
+    //helper methods - private because they are only needed inside HostFileRepository:
     //Other classes do not need to call these methods directly.
-
+    //Each hosts field is separated by a delimiter, If the file delimiter, a carriage return, or a newline was written to the file,
+    //it would ruin our ability to read the Host. Here, we ensure those characters don't end up in the file.
     private String restore(String value) {
         return value.replace(DELIMITER_REPLACEMENT, DELIMITER);
     }
@@ -62,6 +64,7 @@ public class HostFileRepository implements HostRepository {
     }
 
     //id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate
+    //not sure, if i do not do a new guest, only do reservation
     private String serialize(Host host) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                 host.getId(),
@@ -76,7 +79,7 @@ public class HostFileRepository implements HostRepository {
                 host.getWeekend_rate());
     }
 
-    //not sure, if i do not do a new host, only do reveration
+    //here reading a CSV file and converts each line into a Host object using this method
     private Host deserialize(String line) {
         String[] fields = line.split(DELIMITER, -1);
         if (fields.length == 10) {

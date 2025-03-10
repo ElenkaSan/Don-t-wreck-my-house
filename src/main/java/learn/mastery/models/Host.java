@@ -16,8 +16,10 @@ public class Host {
     private BigDecimal standard_rate;
     private BigDecimal weekend_rate;
 
+    //Constructor for creating a new host for the reservation.
     public Host(){}
 
+    //Constructor for representing an existing host stored in a file.
     public Host(String id, String lastName, String email, String phone, String address, String city, String state, String postal_code, BigDecimal standard_rate, BigDecimal weekend_rate) {
         this.id = id;
         this.lastName = lastName;

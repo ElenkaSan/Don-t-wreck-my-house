@@ -10,9 +10,11 @@ public class Guest {
     private String phone;
     private String state;
 
+    //Constructor for creating a new guest for the reservation.
     public Guest() {
     }
 
+    //Constructor for representing an existing guest stored in a file.
     public Guest(String guest_id, String firstName, String lastName, String email, String phone, String state) {
         this.guest_id = guest_id;
         this.firstName = firstName;

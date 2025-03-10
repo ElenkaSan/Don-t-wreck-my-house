@@ -112,4 +112,4 @@ Cancel -> enter host email or groupByHostEmail (required)
  Start to work on the UI layer, break UI layer into several steps, including helper methods:
 9. *[x] Make `MainMenu` and `ViewReservation`, fixing some logic on domain layer, 4 hrs (Actual time 5 hours)
 10. *[x] Do `make` and `edit`, `cancel` reservations - 4hrs (Actual time 7 hours)
-11. *[x] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs  (Actual time 4 hours)
+11. *[x] Be sure all tests pass, nothing missing for requirements and the application works without any issues, 2hrs  (Actual time 6 hours)

@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//It uses a file to store its data.
 public class ReservationFileRepository implements ReservationRepository {
+    //Each reservations field is separated by a delimiter, If the file delimiter, a carriage return, or a newline was written to the file,
+    //it would ruin our ability to read the Reservation. Here, we ensure those characters don't end up in the file.
     private static final String DELIMITER = ",";
   //  private static final String DELIMITER_REPLACEMENT = "@@@";
     private static final String HEADER = "id,start_date,end_date,guest_id,total";
@@ -65,8 +68,9 @@ public class ReservationFileRepository implements ReservationRepository {
 
         if (files != null) {
             for (File file : files) {
-               // System.out.println("Checking file: " + file.getName());
-                List<Reservation> hostReservations = findByHostId(file.getName().replace(".csv", "")); //keeping just host_id to find all reservations for this host
+                // System.out.println("Checking file: " + file.getName());
+                List<Reservation> hostReservations =
+                        findByHostId(file.getName().replace(".csv", "")); //keeping just host_id to find all reservations for this host
                 reservations.addAll(hostReservations.stream()
                         .filter(r -> r.getGuest().getId().equals(guest_id))
                         .collect(Collectors.toList()));
@@ -78,11 +82,11 @@ public class ReservationFileRepository implements ReservationRepository {
     @Override
     public Reservation add(Reservation reservation) throws DataException {
         getHostReservationFilePath(reservation.getHost().getId());
-        List<Reservation> all = findByHostId(reservation.getHost().getId());
+        List<Reservation> all = findByHostId(reservation.getHost().getId()); //getting all existing reservations
         reservation.setId(all.size() + 1); //need next id inside reservation-test
-        all.add(reservation);
-        writeAll(all, reservation.getHost().getId());
-        return reservation;
+        all.add(reservation); //adding the new reservation to the existing ones or create a new one via  getHostReservationFilePath()
+        writeAll(all, reservation.getHost().getId()); //adding reservation and write changes to the data file
+        return reservation; //return with new generated id
     }
 
     @Override
@@ -90,15 +94,17 @@ public class ReservationFileRepository implements ReservationRepository {
         if (reservation == null) {
             return false;
         }
+        //imperative solution 'how'
         List<Reservation> all = findByHostId(reservation.getHost().getId());
         for (int i = 0; i < all.size(); i++) {
-            if (reservation.getId() == all.get(i).getId()) {
+            if (reservation.getId() == all.get(i).getId()) { //checking each reservation id to mach
                 all.set(i, reservation);
-                writeAll(all, reservation.getHost().getId());
+                writeAll(all, reservation.getHost().getId()); //after finding then update reservation and write changes
                 return true;
             }
         }
-        /* or the same
+        /* //or the same, but declarative solution 'what', focusing on what should be done rather than how to do it.
+         List<Reservation> reservations = findByHostId(reservation.getHost().getId());
          for (int i = 0; i < reservations.size(); i++) {
             if (reservations.get(i).getId() == reservation.getId() &&
                     reservations.get(i).getHost().getId().equals(reservation.getHost().getId())) {
@@ -115,7 +121,7 @@ public class ReservationFileRepository implements ReservationRepository {
         List<Reservation> all = findByHostId(host_id);
         boolean removed = all.removeIf(r -> r.getId() == id);
         if (removed) {
-            writeAll(all, host_id);
+            writeAll(all, host_id); //writing changes
         }
         return removed;
     }
@@ -149,6 +155,9 @@ public class ReservationFileRepository implements ReservationRepository {
     }
 
     //id,start_date,end_date,guest_id,total
+    //All serialization and deserialization methods are private. They are implementation details that should not be shared with the outside world.
+    //Serialization is the process of converting an object's data to a string or byte sequence that can then be saved or transmitted.
+    //Reservation is converted to a line of text. The reverse process, deserialization, converts the string back into a Reservation.
     private String serialize(Reservation guest) {
         return String.format("%d,%s,%s,%s,%s",
                 guest.getId(),
