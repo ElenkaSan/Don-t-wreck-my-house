@@ -126,7 +126,7 @@ public class Controller {
 
             Reservation reservation = view.makeReservationDate();
             reservation.setGuest(guest);
-            reservation.setHost(host);
+            reservation.setHost(reservations.get(0).getHost());
 
             BigDecimal sumTotal = reservationService.summaryTotal(reservation);
             view.displaySummary(reservation, sumTotal);
