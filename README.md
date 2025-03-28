@@ -1,5 +1,7 @@
 # Mastery Project Don't Wreck My House
 
+### Maven project with IntelliJ
+
 ### Project has these Components and packages
 
 ```
@@ -24,7 +26,7 @@
 	│   │           │       HostService.java
 	│   │           │       ReservationService.java
 	│   │           │       Response.java
-	│   │           │       Result.java - should think if need it
+	│   │           │       Result.java
 	│   │           │
 	│   │           |───models
 	│   │           │       Guest.java
@@ -65,5 +67,20 @@
 <img width="939" alt="data" src="https://github.com/user-attachments/assets/07bb16ed-befa-407f-94e4-0fe4d4b08df5" />
 
 <img width="543" alt="Screenshot 2025-03-04 at 12 24 51 PM" src="https://github.com/user-attachments/assets/698e53eb-670c-4d0e-b417-ec7095b7570e" />
+
+
+### Having the Main Menu 
+
+```
+Main Menu
+=========
+0. Exit
+1. View Reservations for Host
+2. Make a Reservation
+3. Edit a Reservation
+4. Cancel a Reservation
+Select [0-4]:
+
+```
 
 
