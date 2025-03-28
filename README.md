@@ -1,6 +1,6 @@
 # Mastery Project Don't Wreck My House
 
-### Planning has these Components and packages
+### Project has these Components and packages
 
 ```
        src
