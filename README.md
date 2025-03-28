@@ -18,10 +18,9 @@ Main Menu
 3. Edit a Reservation
 4. Cancel a Reservation
 Select [0-4]:
-
 ```
 
-### Maven project with IntelliJ
+### Maven project with IntelliJ IDEA
 - Technology Stack: Java
 - Build Tool: Maven
 - Framework: Spring Context
