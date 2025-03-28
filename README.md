@@ -22,11 +22,11 @@ Select [0-4]:
 ```
 
 ### Maven project with IntelliJ
-Technology Stack: Java
-Build Tool: Maven
-Framework: Spring Context
-Testing: JUnit 5
-Encoding: UTF-8
+- Technology Stack: Java
+- Build Tool: Maven
+- Framework: Spring Context
+- Testing: JUnit 5
+- Encoding: UTF-8
 
 This project demonstrates core concepts of Java application development using Spring for application management and JUnit for comprehensive testing.
 
