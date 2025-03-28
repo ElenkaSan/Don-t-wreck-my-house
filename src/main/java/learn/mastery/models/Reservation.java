@@ -101,4 +101,10 @@ public class Reservation {
                 Objects.equals(total, reservation.total) &&
                 Objects.equals(host, reservation.host);
     }
+
+    //@Override equals
+    //The .equals method is an Object member, which means it's a member of all classes. It accepts an Object parameter and returns a boolean:
+    //	- true if the current object and the parameter are the same reference
+    //	- false if they're not.
+    //When we override this method, we're in control of what it means for two objects to be equal
 }
